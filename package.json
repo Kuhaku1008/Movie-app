@@ -10,11 +10,18 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "body-parser": "^2.2.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.14.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-modal": "^3.16.3",
     "react-multi-carousel": "^2.8.5",
-    "react-router-dom": "^7.4.1",
+    "react-router-dom": "^7.5.3",
     "react-youtube": "^10.1.0"
   },
   "devDependencies": {

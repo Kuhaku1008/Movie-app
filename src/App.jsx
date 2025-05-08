@@ -1,101 +1,95 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useState, useEffect } from "react";
-import Header from "./components/Header";
-import Banner from "./components/Banner";
-import MovieList from "./components/MovieList";
-import MovieSearch from "./components/MovieSearch";
-import MovieDetail from "./components/MovieDetail"; // Import trang chi tiết phim
+import React, { useState, useEffect } from 'react';
+import { Routes, Route, useNavigate } from 'react-router-dom'; // Chỉ giữ Routes, Route và useNavigate
+import Header from './components/Header';
+import Banner from './components/Banner';
+import MovieList from './components/MovieList';
+import MovieSearch from './components/MovieSearch';
+import MovieDetail from './components/MovieDetail';
+import Login from './components/Login';
+import Register from './components/Register';
 
 function App() {
-  const [movies, setMovies] = useState({ popular: [], topRated: [] });
-  const [searchResults, setSearchResults] = useState([]);
-  const [loading, setLoading] = useState(false);
+    const [movies, setMovies] = useState({ popular: [], topRated: [] });
+    const [searchResults, setSearchResults] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [user, setUser] = useState(null);
 
-  const handleSearch = async (searchVal) => {
-    if (!searchVal.trim()) {
-      setSearchResults([]);
-      return;
-    }
+    useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+            setIsAuthenticated(true);
+        }
+    }, []);
 
-    setLoading(true);
-    try {
-      const url = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(searchVal)}&include_adult=false&language=vi&page=1`;
-      const options = {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_API_KEY}`,
-        },
-      };
-
-      const response = await fetch(url, options);
-      const data = await response.json();
-      setSearchResults(data.results || []);
-    } catch (error) {
-      console.error("Lỗi khi tìm kiếm phim:", error);
-    }
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    const fetchMovies = async () => {
-      try {
-        const options = {
-          method: "GET",
-          headers: {
-            accept: "application/json",
-            Authorization: `Bearer ${import.meta.env.VITE_API_KEY}`,
-          },
-        };
-
-        const [popularRes, topRatedRes] = await Promise.all([
-          fetch("https://api.themoviedb.org/3/movie/popular?language=vi&page=1", options),
-          fetch("https://api.themoviedb.org/3/movie/top_rated?language=vi&page=1", options),
-        ]);
-
-        const popularData = await popularRes.json();
-        const topRatedData = await topRatedRes.json();
-
-        setMovies({
-          popular: popularData.results,
-          topRated: topRatedData.results,
-        });
-      } catch (error) {
-        console.error("Lỗi khi tải phim:", error);
-      }
+    const handleSearch = async (searchVal) => {
+        // ... (giữ nguyên)
     };
 
-    fetchMovies();
-  }, []);
+    useEffect(() => {
+        // ... (giữ nguyên)
+    }, []);
 
-  return (
-    <Router>
-      <div className="bg-black pb-10">
-        <Header onSearch={handleSearch} />
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <>
-                <Banner />
-                {loading ? (
-                  <p className="text-white text-center py-10">Đang tải kết quả...</p>
-                ) : searchResults.length > 0 ? (
-                  <MovieSearch title="Kết Quả Tìm Kiếm" data={searchResults} />
-                ) : (
-                  <>
-                    <MovieList title="Phim Hot" data={movies.popular} />
-                    <MovieList title="Phim Đề Cử" data={movies.topRated} />
-                  </>
-                )}
-              </>
-            }
-          />
-          <Route path="/movie/:id" element={<MovieDetail />} />
-        </Routes>
-      </div>
-    </Router>
-  );
+    const navigate = useNavigate();
+
+    const handleLoginSuccess = (userData) => {
+        localStorage.setItem('user', JSON.stringify(userData));
+        setUser(userData);
+        setIsAuthenticated(true);
+        navigate('/');
+    };
+
+    const handleRegisterSuccess = (userData) => {
+        navigate('/login');
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem('user');
+        setUser(null);
+        setIsAuthenticated(false);
+        navigate('/');
+    };
+
+    return (
+        <div className="bg-black pb-10">
+            <Header
+                onSearch={handleSearch}
+                isAuthenticated={isAuthenticated}
+                onLogout={handleLogout}
+                navigate={navigate}
+            />
+            <Routes>
+                <Route
+                    path="/"
+                    element={
+                        <>
+                            <Banner />
+                            {loading ? (
+                                <p className="text-white text-center py-10">Đang tải kết quả...</p>
+                            ) : searchResults.length > 0 ? (
+                                <MovieSearch title="Kết Quả Tìm Kiếm" data={searchResults} />
+                            ) : (
+                                <>
+                                    <MovieList title="Phim Hot" data={movies.popular} />
+                                    <MovieList title="Phim Đề Cử" data={movies.topRated} />
+                                </>
+                            )}
+                        </>
+                    }
+                />
+                <Route path="/movie/:id" element={<MovieDetail />} />
+                <Route
+                    path="/login"
+                    element={<Login onLoginSuccess={handleLoginSuccess} />}
+                />
+                <Route
+                    path="/register"
+                    element={<Register onRegisterSuccess={handleRegisterSuccess} />}
+                />
+            </Routes>
+        </div>
+    );
 }
 
 export default App;

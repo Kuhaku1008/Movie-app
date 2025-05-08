@@ -112,7 +112,7 @@ const MovieDetail = () => {
             </div>
           )}
 
-          {/* Nút xem phim */}
+          
           <button
             onClick={handleWatchTrailer}
             className="inline-block bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-3 rounded-lg transition mt-6"
@@ -122,7 +122,7 @@ const MovieDetail = () => {
         </div>
       </div>
 
-      {/* Modal Trailer */}
+    
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={() => setModalIsOpen(false)}
