@@ -1,16 +1,16 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
-import PropTypes from "prop-types";
+import { Link, useNavigate } from "react-router-dom";
+import PropTypes from 'prop-types';
 
 function Register({ onRegisterSuccess }) {
   const [formData, setFormData] = useState({
-    email: "",
+    username: "", 
     password: "",
     confirmPassword: "",
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,11 +28,9 @@ function Register({ onRegisterSuccess }) {
 
   const validateForm = () => {
     const newErrors = {};
-
-    if (!formData.email) {
-      newErrors.email = "Vui lòng nhập email";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email không hợp lệ";
+    
+    if (!formData.username) {
+      newErrors.username = "Vui lòng nhập tên người dùng";
     }
 
     if (!formData.password) {
@@ -64,7 +62,7 @@ function Register({ onRegisterSuccess }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: formData.email,
+          username: formData.username,
           password: formData.password,
         }),
       });
@@ -76,12 +74,11 @@ function Register({ onRegisterSuccess }) {
       }
 
       onRegisterSuccess(data);
-      navigate("/login"); // Redirect to login after successful registration
+      navigate("/login");
     } catch (error) {
       let errorMessage = "Có lỗi xảy ra khi đăng ký";
-
-      if (error.message.includes("Email đã được sử dụng")) {
-        errorMessage = "Email này đã được đăng ký";
+      if (error.message.includes("Tên người dùng đã tồn tại")) {
+        errorMessage = "Tên người dùng này đã được đăng ký";
       } else if (error.message.includes("validation failed")) {
         errorMessage = "Dữ liệu không hợp lệ";
       }
@@ -109,22 +106,22 @@ function Register({ onRegisterSuccess }) {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label htmlFor="email" className="block text-sm font-medium mb-1">
-                  Email
+                <label htmlFor="username" className="block text-sm font-medium mb-1">
+                  Tên người dùng (Email)
                 </label>
                 <input
-                  id="email"
-                  name="email"
-                  type="email"
+                  id="username" 
+                  name="username" 
+                  type="text" 
                   className={`w-full p-3 rounded bg-gray-700 border ${
-                    errors.email ? "border-red-500" : "border-gray-600"
+                    errors.username ? "border-red-500" : "border-gray-600"
                   } focus:outline-none focus:ring-2 focus:ring-red-500`}
-                  placeholder="your@email.com"
-                  value={formData.email}
+                  placeholder="Tên người dùng của bạn"
+                  value={formData.username}
                   onChange={handleChange}
                 />
-                {errors.email && (
-                  <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+                {errors.username && (
+                  <p className="mt-1 text-sm text-red-500">{errors.username}</p>
                 )}
               </div>
 

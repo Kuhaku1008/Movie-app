@@ -23,10 +23,7 @@ const Banner = () => {
               Bộ phim truyền hình được chuyển thể từ tiểu thuyết cùng tên của nhà văn Thảo Trang, gồm 12 tập.
               Phim xoay quanh những cái chết kỳ dị, man rợ xuất hiện ngày càng nhiều ở làng Địa Ngục - nơi nương náu hiện giờ của con cháu băng cướp khét tiếng một thời trong quá khứ.
             </p>
-            <div className="flex items-center space-x-3">
-              <button className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">Xem Trailer</button>
-              <button className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">Xem ngay</button>
-            </div>
+            
           </div>
         </div>
         <div className="w-[50%]">
